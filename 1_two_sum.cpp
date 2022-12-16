@@ -77,7 +77,7 @@ int main()
     test3.nums = {3, 3};
     test3.target = 6;
     test3.expected = {0, 1};
-    tmp = test2;
+    tmp = test3;
     print_result(tmp, solution.twoSum(tmp.nums, tmp.target));
 
     return 0;

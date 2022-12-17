@@ -17,7 +17,7 @@ public:
             else
             {
                 int profit = prices[i] - min;
-                max_profit = (profit > max_profit) ? profit: max_profit
+                max_profit = (profit > max_profit) ? profit: max_profit;
             }
         }
         return max_profit;

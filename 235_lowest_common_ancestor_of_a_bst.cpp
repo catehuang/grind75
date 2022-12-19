@@ -66,34 +66,58 @@ TreeNode* create_a_tree(vector<int> &v)
 
 class Solution {
 public:
-    TreeNode *p, *q, *ans;
-
-    bool find_path(TreeNode* root)
+    TreeNode* helper(TreeNode* root, TreeNode* p, TreeNode* q)
     {
-        if (root == NULL)
+        // both nodes on the left side of root (including middle)
+        if (p->val <= root->val && q->val <= root->val)
         {
-            return false;
-        }
-        int mid = (int) (root == p || root == q);
-        int left = (int) find_path(root->left);
-        int right = (int) find_path(root->right);
-
-        if (mid + left + right >=2)
+            if (p == root || q == root)
+            {
+                return root;
+            }
+            helper(root->left, p, q);
+        } 
+        // both nodes on the right side of root (including middle)
+        else if  (p->val >= root->val && q->val >= root->val)
         {
-            ans = root;
+            if (p == root || q == root)
+            {
+                return root;
+            }
+            helper(root->right, p ,q);
         }
-        return mid + left + right > 0;
+        // two nodes on the different side of node
+        else
+        {
+            return root;
+        }
     }
 
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        // walk through paths until find it
-        // root exists => go left => go right
-        this->p = p;
-        this->q = q;
-        find_path(root);
-        return ans;
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) 
+    {
+        return helper(root, p, q);
     }
 };
+
+TreeNode* find_node(TreeNode* root, int value)
+{
+    while (root != NULL)
+    {
+        if (value == root->val)
+        {
+            return root;
+        }
+        else if (value < root->val)
+        {
+            root = root->left;
+        }
+        else
+        {
+            root = root->right;
+        }
+    }
+    return NULL;
+}
 
 TreeNode* visit_node(TreeNode* root, int value)
 {
@@ -115,10 +139,21 @@ TreeNode* visit_node(TreeNode* root, int value)
     return NULL;
 }
 
-void print_result(int expected, TreeNode *result)
+void print_result(obj testcase, TreeNode *result)
 {
     static int n = 1;
+    int expected = testcase.expected;
     cout << "Test case  #" << n << endl;
+    cout << "root = [";
+    for (int i = 0; i < testcase.root.size(); i++)
+    {
+        if (i != 0)
+        {
+            cout << "," ;
+        }
+        cout << testcase.root[i];
+    }
+    cout << "], p = " << testcase.p << ", q = " << testcase.q << endl;
     cout << "Result: " << result->val << endl;
     cout << "Expected: " << expected << endl;
     if (result->val == expected)
@@ -158,7 +193,7 @@ int main()
         TreeNode *q = visit_node(tree, testcase.q);
 
         TreeNode *r = solution.lowestCommonAncestor(tree, p, q);
-        print_result(testcase.expected, r);
+        print_result(testcase, r);
     }
     
     return 0;
